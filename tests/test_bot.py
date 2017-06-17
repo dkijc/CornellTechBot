@@ -1,11 +1,19 @@
 from unittest import TestCase
 from expects import expect, equal
-from slackclient import SlackClient
-import os
+
+from cornell_tech_bot import CornellTechBot
+
+ctechbot = None
+
 
 class TestBot(TestCase):
-    def test_can_hit_slack_api(self):
-        BOT_NAME = 'starterbot'
-        slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
-        api_call = slack_client.api_call("users.list")
-        expect(api_call.get('ok')).to(equal(True))
+    def setUp(self):
+	    ctechbot = CornellTechBot()
+
+    def test_can_be_created(self):
+        expect(ctechbot.slack_client).not_to(equal(None))
+        expect(ctechbot.BOT_ID).not_to(equal(None))
+        expect(ctechbot.BOT_NAME).to(equal("cornelltechbot"))
+
+    def test_can_read_messages(self):
+        expect(ctechbot.connect()).not_to(equal(None))
