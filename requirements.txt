@@ -3,4 +3,5 @@ slackclient
 # Testing Requirements
 nose
 spec 
+expects
 

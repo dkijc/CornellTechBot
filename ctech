@@ -1,0 +1,33 @@
+#!/bin/bash
+
+while [[ $# == 0 ]]
+do
+    echo ""
+    echo "  Usage: ctech [command]"
+    echo ""
+    echo "      test        Runs tests"
+    echo ""
+    break
+done
+
+while [[ $# == 1 ]]
+do
+    arg="$1"
+    case $arg in
+	test)
+	    source ./.envrc
+	    nosetests --with-specplugin --exe
+	    shift
+	    ;;
+    	*)
+            echo "" 
+            echo "  Argument '$arg' not recognized"
+            ./ctech
+            shift
+            ;;
+    esac
+    break
+done
+
+
+
