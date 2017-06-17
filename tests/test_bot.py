@@ -21,14 +21,21 @@ class TestCornellTechBot(TestCase):
     def test_can_read(self):
         global ctechbot
 
-        hello_message = [{'type': 'hello'}]
+        hello_message = {'type': 'hello'}
         expect(ctechbot.read()).to(equal(hello_message))
 
     def test_can_send_message(self):
         global ctechbot
-        
+
+        toUser = '@cornelltechbot'
         message_text = 'Hey there James'
-        outbound_message = ctechbot.send_message(message_text)
+        incoming_message = ctechbot.send_message(message_text, toUser)
         
-        expect(outbound_message['message']['text']).to(equal(message_text))
-        expect(list(outbound_message.keys())).to(equal(['ok', 'channel', 'ts', 'message']))
+        expect(incoming_message['message']['text']).to(equal(message_text))
+        expect(list(incoming_message.keys())).to(equal(['ok', 'channel', 'ts', 'message']))
+        
+        msg = {key: None for key in list(incoming_message.keys())}
+        while msg.get('type') != 'message':
+            msg = ctechbot.read()
+        
+        expect(msg.get('text')).to(equal(message_text))

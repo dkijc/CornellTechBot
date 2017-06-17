@@ -12,14 +12,15 @@ class CornellTechBot:
             return self.client.server
     
     def read(self):
+        print("are you getting here")
         messages = []
         while len(messages) == 0:
             messages = self.client.rtm_read()
-        return messages
+        return messages[0]
 
-    def send_message(self, msg_text):
+    def send_message(self, msg_text, user):
         return self.client.api_call(
             "chat.postMessage",
-            channel="@jldork",
+            channel=user,
             text=msg_text,
         )
