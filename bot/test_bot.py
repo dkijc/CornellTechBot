@@ -1,7 +1,7 @@
 from unittest import TestCase
 from expects import expect, equal, be_a
 
-from bot import CornellTechBot
+from .bot import CornellTechBot
 from slackclient._server import Server
 
 ctechbot = CornellTechBot()
