@@ -24,7 +24,7 @@ Until then.. see you soon!
 
 ----- 
 
-##Admittance Improvements via Slack
+## Admittance Improvements via Slack
 
 Future plans:
 **DeanBot (Dean for now)**
