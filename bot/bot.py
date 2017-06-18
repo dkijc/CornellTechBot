@@ -15,7 +15,13 @@ class CornellTechBot:
         messages = []
         while len(messages) == 0:
             messages = self.client.rtm_read()
-        return messages[0]
+        
+        if len(messages) > 0:
+            for message in messages:
+                if 'text' in message:
+                    return message
+        
+        return None
 
     def send_message(self, msg_text, user):
         return self.client.api_call(
@@ -23,12 +29,14 @@ class CornellTechBot:
             channel=user,
             text=msg_text,
         )
+    
     def read_and_respond(self):
         msgJSON = self.read()
-
-        if(msgJSON.get('type') == 'desktop_notification'):
+        
+        if msgJSON != None:
+            print(msgJSON)
             self.client.api_call(
                 "chat.postMessage",
-                channel=msgJSON.get('channel'),
+                channel=msgJSON.get('team'),
                 text="Hello~"
             )
