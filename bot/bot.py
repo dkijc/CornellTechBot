@@ -10,7 +10,7 @@ class CornellTechBot:
     def connect(self):
         if self.client.rtm_connect():
             return self.client.server
-    
+
     def read(self):
         messages = []
         while len(messages) == 0:
@@ -29,13 +29,16 @@ class CornellTechBot:
             text=msg_text,
         )
     
-    def read_and_respond(self):
+    def read_and_respond(self, users):
         msgJSON = self.read()
-        
+    
         if msgJSON != None:
-            print(msgJSON)
-            self.client.api_call(
-                "chat.postMessage",
-                channel=msgJSON.get('team'),
-                text="Hello~"
-            )
+            for member in users.get('members'):
+                if member and member.get('id') == msgJSON.get('user') and msgJSON.get('type') != 'user_typing':
+                    fName = member.get('profile').get('first_name')
+                
+                    self.client.api_call(
+                        "chat.postMessage",
+                        channel=msgJSON.get('channel'),
+                        text="Hey " + fName + "!"
+                    )

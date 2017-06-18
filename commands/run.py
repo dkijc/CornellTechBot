@@ -11,7 +11,9 @@ class RunCommand(Command):
     def handle(self):
         ctechbot = CornellTechBot()
         server = ctechbot.connect()
-
-        # TODO: fix infinite loop for read_and_respond
-        while True:
-            ctechbot.read_and_respond()
+        if server:
+            users = ctechbot.client.api_call('users.list')
+            ctechbot.read_and_respond(users)
+        else:
+            print("Connection failed. Invalid Slack token or bot ID?")
+            return
