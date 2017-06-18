@@ -18,8 +18,7 @@ class CornellTechBot:
         
         if len(messages) > 0:
             for message in messages:
-                if 'text' in message:
-                    return message
+                return message
         
         return None
 
