@@ -32,7 +32,7 @@ class TestCornellTechBot(TestCase):
         incoming_message = ctechbot.send_message(message_text, toUser)
         
         expect(incoming_message['message']['text']).to(equal(message_text))
-        expect(list(incoming_message.keys())).to(equal(['ok', 'channel', 'ts', 'message']))
+        expect(set(incoming_message.keys())).to(equal(set(['ok', 'channel', 'ts', 'message'])))
         
         msg = {key: None for key in list(incoming_message.keys())}
         while msg.get('type') != 'message':
