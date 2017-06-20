@@ -1,5 +1,6 @@
 from cleo import Command
 from bot.bot import CornellTechBot
+import time
 
 class RunCommand(Command):
     """
@@ -9,11 +10,14 @@ class RunCommand(Command):
     """
 
     def handle(self):
+        self.line('<info>Starting up the chatbot</info>')
         ctechbot = CornellTechBot()
         server = ctechbot.connect()
         if server:
-            users = ctechbot.client.api_call('users.list')
-            ctechbot.read_and_respond(users)
+            self.line('<info>Connected! Now Reading/Responding</info>')
+            while True:
+                ctechbot.read_and_respond()
+                time.sleep(1)
         else:
             print("Connection failed. Invalid Slack token or bot ID?")
             return
