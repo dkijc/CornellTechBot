@@ -42,13 +42,15 @@ class CornellTechBot:
         while len(messages) == 0:
             messages = self.client.rtm_read()
 
-        responses = [
-            self.respond.get(message['type'], print)(message)
-            for message in messages 
-            # Filter out Nones and self-messages here
-            if message and message.get('subtype') != 'bot_message'
-            ]
+        responses = []
 
+        for message in messages: 
+            not_bot = message.get('subtype') != 'bot_message'
+            
+            if message and not_bot:
+                response = self.respond.get(message['type'], print)(message)
+                responses.append(response)
+                
         return responses
         
 
