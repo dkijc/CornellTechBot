@@ -2,7 +2,6 @@ from unittest import TestCase
 from expects import expect, equal, be_a
 
 from .bot import CornellTechBot
-from slackclient._server import Server
 
 ctechbot = CornellTechBot()
 
@@ -13,10 +12,6 @@ class TestCornellTechBot(TestCase):
         expect(ctechbot.client).not_to(equal(None))
         expect(ctechbot.BOT_ID).not_to(equal(None))
         expect(ctechbot.BOT_NAME).to(equal("cornelltechbot"))
-
-    def test_can_connect(self):
-        ws_server = ctechbot.connect()
-        expect(ws_server).to(be_a(Server))
     
     def test_can_read(self):
         global ctechbot
