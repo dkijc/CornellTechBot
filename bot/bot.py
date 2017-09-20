@@ -1,26 +1,24 @@
 import os
 from slackclient import SlackClient
+from utilities import modified_pop
 
 class CornellTechBot:
     def __init__(self):
         self.BOT_NAME = 'cornelltechbot'
         self.client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
-        self.BOT_ID = SlackClient(os.environ.get('BOT_ID'))
+        self.users = self.get_users_dict()
+        self.channels = self.client.api_call("channels.list")
+        self.server = None
+        self.respond = { 
+            # Other types of messages are: 
+            # user_typing, hello, reconnect_url, presence_change, desktop_notification
+            'message': self.respond_message
+        }
 
     def connect(self):
         if self.client.rtm_connect():
+            self.server = self.client.server
             return self.client.server
-
-    def read(self):
-        messages = []
-        while len(messages) == 0:
-            messages = self.client.rtm_read()
-        
-        if len(messages) > 0:
-            for message in messages:
-                return message
-        
-        return None
 
     def send_message(self, msg_text, user):
         return self.client.api_call(
@@ -29,16 +27,37 @@ class CornellTechBot:
             text=msg_text,
         )
     
-    def read_and_respond(self, users):
-        msgJSON = self.read()
-    
-        if msgJSON != None:
-            for member in users.get('members'):
-                if member and member.get('id') == msgJSON.get('user') and msgJSON.get('type') != 'user_typing':
-                    fName = member.get('profile').get('first_name')
+    def get_users_dict(self):
+        response = self.client.api_call('users.list')
+        members = response['members']            
+
+        return {   
+            member['id']: modified_pop(member, 'id') 
+            for member in members
+            }
+
+    def read_and_respond(self):
+        messages = []
+
+        while len(messages) == 0:
+            messages = self.client.rtm_read()
+
+        responses = []
+
+        for message in messages: 
+            not_bot = message.get('subtype') != 'bot_message'
+            
+            if message and not_bot:
+                response = self.respond.get(message['type'], print)(message)
+                responses.append(response)
                 
-                    self.client.api_call(
-                        "chat.postMessage",
-                        channel=msgJSON.get('channel'),
-                        text="Hey " + fName + "!"
-                    )
+        return responses
+        
+
+    def respond_message(self, msg):
+        user = self.users.get(msg.get('user'))
+        return self.client.api_call(
+                "chat.postMessage",
+                channel=msg.get('channel'),
+                text="Hey " + user['profile']['first_name'] + "!"
+            )

@@ -1,0 +1,1 @@
+web: python run bot/bot.py
