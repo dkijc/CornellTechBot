@@ -1,33 +1,11 @@
-#!/bin/bash
+#!./venv/bin/python
+from cleo import Application
+from commands.run import RunCommand
+from commands.test import TestCommand
 
-while [[ $# == 0 ]]
-do
-    echo ""
-    echo "  Usage: ctech [command]"
-    echo ""
-    echo "      test        Runs tests"
-    echo ""
-    break
-done
+app = Application()
+app.add(RunCommand())
+app.add(TestCommand())
 
-while [[ $# == 1 ]]
-do
-    arg="$1"
-    case $arg in
-	test)
-	    source ./.envrc
-	    nosetests --with-specplugin --exe
-	    shift
-	    ;;
-    	*)
-            echo "" 
-            echo "  Argument '$arg' not recognized"
-            ./ctech
-            shift
-            ;;
-    esac
-    break
-done
-
-
-
+if __name__ == '__main__':
+    app.run()

@@ -1,3 +1,4 @@
+cleo
 slackclient
 
 # Testing Requirements
